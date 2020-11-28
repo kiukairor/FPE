@@ -20,7 +20,7 @@ FF3::ff3_helper FF3::init(byte *data, unsigned int data_len){
     memcpy(ff3_help.A,data,u);
 
     ff3_help.B = new byte[v];
-    memcpy(ff3_help.B,data,v);
+    memcpy(ff3_help.B,data+u,v);
 
     cout << "BK0" << endl;
     //byte *Tl = new byte[32];
@@ -41,8 +41,10 @@ FF3::ff3_helper FF3::init(byte *data, unsigned int data_len){
     memcpy(Tr,tweak+4,3);
     Tr[3]=tweak[3] & 15;
     print_array(Tr,4);    
-    cout << "HEEEERE 22222" << endl;
-
+    cout << "INIT" << endl;
+    cout << "init A,B = " << endl;
+    print_array(ff3_help.A,u);
+    print_array(ff3_help.B,v);
     
     ff3_help.u=u;
     ff3_help.v=v;
@@ -59,7 +61,7 @@ int FF3::execRound(int i, FF3::ff3_helper helper){
 
     byte W[4]={0};
     int m = 0;
-    byte *i_array;
+    byte *i_array=new byte[4];
     byte *tmp;
     if (i%2 == 0 ){
         m=helper.u;
@@ -80,23 +82,33 @@ int FF3::execRound(int i, FF3::ff3_helper helper){
     
     //step4.ii; check doc NIST here
     //xorByteArrays()
-    int2byteArray(i, i_array,4);
+    cout << "OULOULOU" << endl;
+    int32toByteArray(i, i_array);
+    cout << "OULOULOU" << endl;
     xorByteArrays(W,4, i_array, 4, tmp);
     
     
     cout << "printing W,i,tmp=W^i" << endl;
-    print_array(W,4);
-    print_array(i_array,4);
+    //print_array(W,4);
+    //print_array(i_array,4);
     print_array(tmp,4);
     
     //NUM_radix(REV(B))
-    cout << "printing v = " << dec << helper.v << endl;
-    cout << "printing u = " << dec << helper.u << endl;
+    //cout << "printing v = " << dec << helper.v << endl;
+    //cout << "printing u = " << dec << helper.u << endl;
     print_array(helper.B,helper.v);
+    
+    //P right half
     byte* rev = revByteArray(helper.B, helper.v);
+    cout << "chelou numP array = " << endl;
     print_array(rev,helper.v);
-
     //num_radix(tmp)^12
+    int numP = num(rev,helper.v,this->base);
+    cout << "chelou numP = " << dec << numP << endl;
+    
+    //en fait je fais des trucs qui s'annulent j'ai limpression mais ca doit dependre de la base ds laque on est en fait
+    //dc on ne reflechit pas on implemente step by step
+    
     cout << "End of execRound " << i << endl;
     return 0;
 }

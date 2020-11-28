@@ -18,6 +18,7 @@ void print_array(byte *in, int in_len);
 int bytelen(string byteString);
 int num(string str, int radix);
 int num(string str);
+int num(byte *arr, int arr_len, int radix);
 string tostr(int str_len, int radix, int x);
 
 string rev(string str);
@@ -33,7 +34,7 @@ int hexStr2int(char *c);
 int convertDecStr2Arr(string str, byte *arr, int arr_len);
 byte* retconvertDecStr2Arr(string str);
 int xorByteArrays(byte *max, int max_len, byte *min, int min_len, byte *&r);
-int int2byteArray(int val, byte *&res, int res_len);
-int int2byteArray(int val, byte res[4]);
+int bigInt2ByteArray(int val, byte *&res, int res_len);
+int int32toByteArray(int val, byte res[4]);
 //
 #endif

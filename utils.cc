@@ -43,6 +43,18 @@ int num(string str, int radix){
     return x;
 }
 
+int num(byte *arr, int arr_len, int radix){
+    int x=0;
+
+    for (int i=0; i<arr_len; i++){
+        x=x*radix+arr[i];
+    }
+
+    return x;
+}
+
+
+
 int num(string str){
     int x=0;
 
@@ -101,7 +113,7 @@ byte* revByteArray(byte array[], int len_array){
     for (int i=0; i < len_array; i++){
         r[i]=array[len_array-1-i];
     }    
-    
+
     return r;
 }
 
@@ -224,15 +236,8 @@ int xorByteArrays(byte *max, int max_len, byte *min, int min_len, byte *&r){
 
 }
 
-int int2byteArray(int val, byte *&res, int res_len){
-    
-    if (res_len > 4)
-    {
-        perror("new case, update function");
-        return -1;
-    }
 
-    res = new byte[res_len];
+int int32toByteArray(int val, byte res[4]){
     
     // int = 4 bytes = 4*8 bits...
     res[3] = (val << 24) >> 24;
@@ -244,13 +249,24 @@ int int2byteArray(int val, byte *&res, int res_len){
 }
 
 
-int int2byteArray(int val, byte res[4]){
+//val could be very >> 2^32, deal with that later
+//depends on the plain and the radix
+int bigInt2ByteArray(int val, byte *&res, int res_len){
     
-    // int = 4 bytes = 4*8 bits...
-    res[3] = (val << 24) >> 24;
-    res[2] = (val << 16) >> 24;
-    res[1] = (val << 8) >> 24;
-    res[0] = val >> 24;
-    
+    //byte *res=new byte[res_len]={0};
+    memset(res,0,res_len);
+
+    for (int i=0; i < res_len && val !=0; i++){
+        cout << "i, val =" << dec << val << endl ;
+        
+        res[res_len-1-i]=val & 256;
+        cout << "i =" << dec << i <<endl;
+        cout << "len-1-i =" << dec << res_len-1-i <<endl;
+        cout << "val =" << dec << res[res_len-1-i] << endl ;
+        
+        val = val >> 8;
+    }
+    print_array(res,res_len);
+
     return 0; 
 }
