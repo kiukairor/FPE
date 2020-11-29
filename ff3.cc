@@ -105,7 +105,39 @@ int FF3::execRound(int i, FF3::ff3_helper helper){
     //num_radix(tmp)^12
     int numP = num(rev,helper.v,this->base);
     cout << "chelou numP = " << dec << numP << endl;
+    byte *a=new byte[12];
+    bigInt2ByteArray(numP,a,12);
+    print_array(a,12);
+
+    byte *P = new byte[16];
+    memcpy(P,tmp,4);
+    memcpy(P+4,a,12);
+    print_array(P,16);
+    //byte *revP = new byte[16];
+    revByteArray(P,16,0);
+    print_array(P,16);
     
+    //S; REVB(P); aes_REV(K) 
+    AES aes(128);
+    print_array(key,16);
+    revByteArray(key,key_len,0);
+    print_array(key,16);
+
+    unsigned int outLen=0;
+    //DAFUK with IV in NIST doc
+    byte iv[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
+    byte *S = aes.EncryptCBC(P, 16, key, iv, outLen);
+    print_array(S,16);
+    revByteArray(S,outLen,0);
+    print_array(S,16);
+
+    mpz_t z;
+EN FAIT JE VAIS APRES REDUIRE MODULO RADIX^M DC
+JE PEUX COMMENCER A CODER SALE AC un ERROR CASE ET ON VERRA APRES
+
+    //unsigned long a[20];
+/* Initialize z and a */
+    //mpz_import(z, 16, 1, sizeof(S[0]), 0, 0, S);
     //en fait je fais des trucs qui s'annulent j'ai limpression mais ca doit dependre de la base ds laque on est en fait
     //dc on ne reflechit pas on implemente step by step
     

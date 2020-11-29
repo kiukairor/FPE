@@ -11,6 +11,18 @@
 //#include "feistel.h"
 #include "ff3.h"
 
+#include <openssl/aes.h>
+#include <openssl/bn.h>
+
+
+
+
+#include <stdint.h>
+
+#ifndef UINT128MAX
+    #error "__uint128_t not defined"
+#endif
+
 void handler(int sig) {
   void *array[10];
   size_t size;
@@ -72,11 +84,16 @@ int main(){
    
 
     byte *a=new byte[12];
-    cout << "FDP" <<endl;
-    print_array(a,4);
-    bigInt2ByteArray(5,a,4);
-
-    print_array(a,12);
+    cout << "MAIN FDP" <<endl;
+    
+    unsigned long long *A=NULL;
+    printf("sizeof ptr =%d\n", sizeof(a));
+    //print_array(a,4);
+    //bigInt2ByteArray(65799,a,12);
+    __uint128_t *aaaa=0;
+    printf("sizeof ptr =%d\n", sizeof(a));
+    //BIGNUM *y = BN_new();
+    //print_array(a,12);
 return 0;
 }
 

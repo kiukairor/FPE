@@ -24,6 +24,7 @@ string tostr(int str_len, int radix, int x);
 string rev(string str);
 string revB(string str);
 byte* revByteArray(byte array[], int len_array);
+int revByteArray(byte *&array, int len_array, int fake);
 
 
 void alloc_matrix(byte **&matrix, int rows, int columns);

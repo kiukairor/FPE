@@ -118,6 +118,21 @@ byte* revByteArray(byte array[], int len_array){
 }
 
 
+int revByteArray(byte *&array, int len_array, int fake){
+
+    byte *r = new byte[len_array];
+    
+    for (int i=0; i < len_array; i++){
+        r[i]=array[len_array-1-i];
+    }    
+
+    memcpy(array,r,len_array);
+    delete[] r;
+    return 0;
+}
+
+
+
 void alloc_matrix(byte **&matrix, int rows, int columns){
     matrix = new byte*[rows];
     //matrix =  (byte **) calloc(sizeof(byte *), rows);
@@ -251,20 +266,14 @@ int int32toByteArray(int val, byte res[4]){
 
 //val could be very >> 2^32, deal with that later
 //depends on the plain and the radix
-int bigInt2ByteArray(int val, byte *&res, int res_len){
+int bigInt2ByteArray(int in, byte *&res, int res_len){
     
     //byte *res=new byte[res_len]={0};
     memset(res,0,res_len);
-
-    for (int i=0; i < res_len && val !=0; i++){
-        cout << "i, val =" << dec << val << endl ;
-        
-        res[res_len-1-i]=val & 256;
-        cout << "i =" << dec << i <<endl;
-        cout << "len-1-i =" << dec << res_len-1-i <<endl;
-        cout << "val =" << dec << res[res_len-1-i] << endl ;
-        
-        val = val >> 8;
+    unsigned int val=in;
+    for (int i=0; i < res_len; i++){
+        res[res_len-1-i]=in%256;
+        in=in/256;
     }
     print_array(res,res_len);
 

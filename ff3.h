@@ -3,6 +3,8 @@
 
 #include "feistel.h"
 #include "utils.h"
+#include <gmpxx.h>
+#include <openssl/bn.h>
 
 using namespace std;
 
