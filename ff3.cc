@@ -58,7 +58,7 @@ return ff3_help;
 //i is the i-th round
 //int FF3::execRound(int i, int u, int v, byte W[32], byte Tr[32], byte Tl[32]){
 int FF3::execRound(int i, FF3::ff3_helper helper){
-
+    int fake=0;
     byte W[4]={0};
     int m = 0;
     byte *i_array=new byte[4];
@@ -103,7 +103,7 @@ int FF3::execRound(int i, FF3::ff3_helper helper){
     cout << "chelou numP array = " << endl;
     print_array(rev,helper.v);
     //num_radix(tmp)^12
-    int numP = num(rev,helper.v,this->base);
+    int numP = (int) numL(rev,helper.v,this->base);
     cout << "chelou numP = " << dec << numP << endl;
     byte *a=new byte[12];
     bigInt2ByteArray(numP,a,12);
@@ -114,13 +114,13 @@ int FF3::execRound(int i, FF3::ff3_helper helper){
     memcpy(P+4,a,12);
     print_array(P,16);
     //byte *revP = new byte[16];
-    revByteArray(P,16,0);
+    revByteArray(P,16,fake);
     print_array(P,16);
     
     //S; REVB(P); aes_REV(K) 
     AES aes(128);
     print_array(key,16);
-    revByteArray(key,key_len,0);
+    revByteArray(key,key_len,fake);
     print_array(key,16);
 
     unsigned int outLen=0;
@@ -128,20 +128,47 @@ int FF3::execRound(int i, FF3::ff3_helper helper){
     byte iv[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
     byte *S = aes.EncryptCBC(P, 16, key, iv, outLen);
     print_array(S,16);
-    revByteArray(S,outLen,0);
+    revByteArray(S,outLen,fake);
+    
     print_array(S,16);
 
-    mpz_t z;
-EN FAIT JE VAIS APRES REDUIRE MODULO RADIX^M DC
-JE PEUX COMMENCER A CODER SALE AC un ERROR CASE ET ON VERRA APRES
-
+//    mpz_t z;
+//EN FAIT JE VAIS APRES REDUIRE MODULO RADIX^M DC
+//JE PEUX COMMENCER A CODER SALE AC un ERROR CASE ET ON VERRA APRES
+//dc 2^64 should be more than enough for digits but then means forgetting some???
     //unsigned long a[20];
 /* Initialize z and a */
     //mpz_import(z, 16, 1, sizeof(S[0]), 0, 0, S);
     //en fait je fais des trucs qui s'annulent j'ai limpression mais ca doit dependre de la base ds laque on est en fait
     //dc on ne reflechit pas on implemente step by step
+    unsigned long long s=numL(S, 16, 256);
+    printf("s=%llu\n", s);
+    unsigned long long mod=pow((double)base,(double)m);
+    printf("mwe %lld\n", mod);
+
+    revByteArray(helper.A,helper.u, fake);
+    unsigned long long aa=numL(helper.A,helper.u,256);
     
+    unsigned long long c=(aa+s) % mod;
+    byte *c_arr=new byte [m];
+    memset(c_arr,0,m);
+
+    toByteArray(c_arr, m, base,c);
+    print_array(c_arr,m);
+    revByteArray(c_arr,m,fake);
+    print_array(c_arr,m);
+    
+
+    //Check sizes, cheloou un peu, tjrs v et pas u
+    memcpy(helper.A,helper.B,helper.v);
+    memcpy(helper.B,c_arr,m);
+    
+    
+    cout << "Before nd of execRound " << dec << c << endl;
     cout << "End of execRound " << i << endl;
+
+
+
     return 0;
 }
 
@@ -157,10 +184,20 @@ int FF3::exec(byte *data, unsigned int data_len){
 
     FF3::ff3_helper helper = FF3::init(data,data_len);
     
-    //for (int i=0; i<feistel.rounds; i++){
-        for (int i=0; i<2; i++){
+    cout <<" BEFORE evertything" <<endl;
+    print_array(helper.A, helper.u);
+    print_array(helper.B, helper.v);
+    for (int i=0; i<feistel.rounds; i++){
         cout << "i = " << i << endl;        
         FF3::execRound(i,helper);
     }
+
+    cout <<" AFTER evertything" <<endl;
+    print_array(helper.A, helper.u);
+    print_array(helper.B, helper.v);
+
+
+
+
     return 0;
 }

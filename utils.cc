@@ -43,9 +43,16 @@ int num(string str, int radix){
     return x;
 }
 
-int num(byte *arr, int arr_len, int radix){
+//this has to be sorted out later, either gmp  openssl to deal with big int
+unsigned long long numL(byte *arr, int arr_len, int radix){
     int x=0;
+    
+    if (arr_len>8){
+        cout << " utils.cc, num(): WARNING conversion precision loss" << endl;
+        arr_len=8;
+    }
 
+    cout << "arr_len = " << dec << arr_len <<endl;
     for (int i=0; i<arr_len; i++){
         x=x*radix+arr[i];
     }
@@ -55,8 +62,8 @@ int num(byte *arr, int arr_len, int radix){
 
 
 
-int num(string str){
-    int x=0;
+unsigned long long numL(string str){
+    unsigned long long x=0;
 
     for (int i=0; i<str.length(); i++){
         x = (x<<2) + str[i];
@@ -69,7 +76,7 @@ int num(string str){
 string tostr(int str_len, int radix, int x){
 
     byte *tmp=new byte[str_len];
-    if ( x >= (radix^str_len) ){
+    if ( x >= pow((double)radix,(double)str_len) ){
         return "";
     }
 
@@ -83,6 +90,19 @@ string tostr(int str_len, int radix, int x){
     delete[] tmp;
     return str;
 
+}
+
+int toByteArray(byte *arr, int str_len, int radix, unsigned long long x){
+    if ( x >= pow((double)radix,(double)str_len) ){
+        return -1;
+    }
+
+    for (int i=0;i<str_len;i++){
+        arr[str_len-1-i]=x%radix;
+        x=x/radix;
+    }
+
+    return 0;
 }
 
 
@@ -240,11 +260,11 @@ byte* retconvertDecStr2Arr(string str){
 ////a and b should be of byte size >= min_len
 int xorByteArrays(byte *max, int max_len, byte *min, int min_len, byte *&r){
     int len = (max_len >min_len) ? max_len : min_len;
-    cout << "len = " << len << endl;
+    //cout << "len = " << len << endl;
     r=new byte[max_len];
     for (int i=min_len-1, j=max_len-1; i>-1; i--,j--){
         r[j]=max[j]^min[i];
-        printf("max[i]=%d, min= %d, r=%d\n", r[j],max[j],min[i]);
+        //printf("max[i]=%d, min= %d, r=%d\n", r[j],max[j],min[i]);
     }
 
     return 0;
@@ -279,3 +299,4 @@ int bigInt2ByteArray(int in, byte *&res, int res_len){
 
     return 0; 
 }
+

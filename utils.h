@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include "aes.h"
+#include "math.h"
 
 using namespace std;
 
@@ -16,10 +17,12 @@ void sdeup();
 void print_array(const char *in, int in_len);
 void print_array(byte *in, int in_len);
 int bytelen(string byteString);
-int num(string str, int radix);
-int num(string str);
+unsigned long long numL(byte *arr, int arr_len, int radix);
+unsigned long long numL(string str);
 int num(byte *arr, int arr_len, int radix);
 string tostr(int str_len, int radix, int x);
+int toByteArray(byte *arr, int str_len, int radix, unsigned long long x);
+
 
 string rev(string str);
 string revB(string str);
@@ -37,5 +40,6 @@ byte* retconvertDecStr2Arr(string str);
 int xorByteArrays(byte *max, int max_len, byte *min, int min_len, byte *&r);
 int bigInt2ByteArray(int val, byte *&res, int res_len);
 int int32toByteArray(int val, byte res[4]);
+
 //
 #endif
