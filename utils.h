@@ -4,7 +4,7 @@
 #include<iostream>
 #include <string.h>
 #include <cmath>
-
+#include <chrono>
 #include "aes.h"
 #include "math.h"
 
@@ -16,8 +16,11 @@ void sdeup();
 
 void print_array(const char *in, int in_len);
 void print_array(byte *in, int in_len);
+void print_array_hex(byte *in, int in_len);
 int bytelen(string byteString);
 unsigned long long numL(byte *arr, int arr_len, int radix);
+unsigned long long numL(byte *arr, int arr_len, int radix, unsigned long long mod);
+__uint128_t hope_numL(byte *arr, int arr_len, int radix);
 unsigned long long numL(string str);
 int num(byte *arr, int arr_len, int radix);
 string tostr(int str_len, int radix, int x);

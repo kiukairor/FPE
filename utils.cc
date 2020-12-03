@@ -29,6 +29,17 @@ void print_array(byte *in, int in_len){
 return;
 }
 
+void print_array_hex(byte *in, int in_len){
+
+    for (int i=0; i<in_len-1; i++){
+        printf("0x%x, ", in[i]);
+    }
+    printf("0x%x\n", in[in_len-1]);
+    
+return;
+}
+
+
 int bytelen(string byteString){
     return byteString.length();
 }
@@ -48,17 +59,61 @@ unsigned long long numL(byte *arr, int arr_len, int radix){
     int x=0;
     
     if (arr_len>8){
-        cout << " utils.cc, num(): WARNING conversion precision loss" << endl;
-        arr_len=8;
+        //cerr << " utils.cc, num(): WARNING conversion may lead precision loss" << endl;
+        //cerr << " utils.cc, num(): WARNING should check the actula length wihtout leading zeroes to be sure" << endl;
+        //arr_len=8;
     }
 
-    cout << "arr_len = " << dec << arr_len <<endl;
+    //cout << "arr_len = " << dec << arr_len <<endl;
     for (int i=0; i<arr_len; i++){
         x=x*radix+arr[i];
     }
 
     return x;
 }
+
+
+
+__uint128_t hope_numL(byte *arr, int arr_len, int radix){
+    __uint128_t x=0;
+    
+    if (arr_len>8){
+        //cerr << " utils.cc, num(): WARNING conversion may lead precision loss" << endl;
+        //cerr << " utils.cc, num(): WARNING should check the actula length wihtout leading zeroes to be sure" << endl;
+        //arr_len=8;
+    }
+
+    //cout << "arr_len = " << dec << arr_len <<endl;
+    for (int i=0; i<arr_len; i++){
+        printf("i=%d, x=%llu", i, x);
+        x=x*radix+arr[i];
+    }
+
+    return x;
+}
+
+
+
+unsigned long long numL(byte *arr, int arr_len, int radix, unsigned long long mod){
+    int x=0;
+    
+    if (arr_len>8){
+        //cerr << " utils.cc, num(): WARNING conversion may lead precision loss" << endl;
+        //cerr << " utils.cc, num(): WARNING should check the actula length wihtout leading zeroes to be sure" << endl;
+        //arr_len=8;
+    }
+
+    //cout << "arr_len = " << dec << arr_len <<endl;
+    for (int i=0; i<arr_len; i++){
+       // cout << "x= "<< dec << x << endl;
+        x=(((x*radix) % mod) + (arr[i]%mod))%mod;
+       // cout << "x= "<< dec << x << endl;
+
+    }
+
+    return x;
+}
+
 
 
 
@@ -203,9 +258,9 @@ int prf(byte *data, unsigned int data_len, byte *&out, unsigned int &out_len, by
     }
 
     //16=aes->Nb*sizeof(byte);
-    cout << "ZEUBI" <<endl;
+    //cout << "ZEUBI" <<endl;
     memcpy(out,Y[block_len],16);
-    cout << "GROS FDP" <<endl;
+    //cout << "GROS FDP" <<endl;
     
     //print_array(Y[block_len],16);
     for (int i=0; i<block_len; i++)
@@ -216,7 +271,7 @@ int prf(byte *data, unsigned int data_len, byte *&out, unsigned int &out_len, by
         delete[] Y[i];
     delete[] Y;
 
-    print_array(out,16);
+    //print_array(out,16);
     
     return 0;
 
@@ -295,7 +350,7 @@ int bigInt2ByteArray(int in, byte *&res, int res_len){
         res[res_len-1-i]=in%256;
         in=in/256;
     }
-    print_array(res,res_len);
+    //print_array(res,res_len);
 
     return 0; 
 }

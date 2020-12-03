@@ -28,7 +28,7 @@ class FF3
             this->key_len=key_len;
             this->base=base;
             this->tweak=tweak;
-            this->tweak_len=56;
+            this->tweak_len=56;;
 
         }
         
@@ -44,6 +44,9 @@ class FF3
 
         byte *key;
         byte *tweak;
+        byte *cipher;
+        AES aes;
+        int cipher_len;
         int base;
         int key_len;
         int tweak_len;
@@ -51,8 +54,11 @@ class FF3
 
         //ff3_helper init(byte *data, unsigned int data_len);
         ff3_helper init(byte *data, unsigned int data_len);
-        int execRound(int i, FF3::ff3_helper helper);
-        int exec(byte *data, unsigned int data_len);
+        int encrypt_round(int i, FF3::ff3_helper helper);
+        int encrypt(byte *data, unsigned int data_len, byte *&out, int &out_len);
+        
+        int decrypt_round(int i, FF3::ff3_helper helper);
+        int decrypt(byte *data, unsigned int data_len,byte *&out, int &out_len);
 
 
         //should not be here

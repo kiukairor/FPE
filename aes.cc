@@ -24,6 +24,42 @@ AES::AES(int keyLen)
   blockBytesLen = 4 * this->Nb * sizeof(unsigned char);
 }
 
+
+
+unsigned char * AES::EncryptECB(unsigned char in[], unsigned int inLen, unsigned  char key[], unsigned int &outLen)
+{
+  outLen = GetPaddingLength(inLen);
+  unsigned char *alignIn  = PaddingNulls(in, inLen, outLen);
+  unsigned char *out = new unsigned char[outLen];
+  unsigned char *roundKeys = new unsigned char[4 * Nb * (Nr + 1)];
+  KeyExpansion(key, roundKeys);
+  for (unsigned int i = 0; i < outLen; i+= blockBytesLen)
+  {
+    EncryptBlock(alignIn + i, out + i, roundKeys);
+  }
+  
+  delete[] alignIn;
+  delete[] roundKeys;
+  
+  return out;
+}
+
+unsigned char * AES::DecryptECB(unsigned char in[], unsigned int inLen, unsigned  char key[])
+{
+  unsigned char *out = new unsigned char[inLen];
+  unsigned char *roundKeys = new unsigned char[4 * Nb * (Nr + 1)];
+  KeyExpansion(key, roundKeys);
+  for (unsigned int i = 0; i < inLen; i+= blockBytesLen)
+  {
+    DecryptBlock(in + i, out + i, roundKeys);
+  }
+
+  delete[] roundKeys;
+  
+  return out;
+}
+
+
 unsigned char *AES::EncryptCBC(unsigned char in[], unsigned int inLen, unsigned  char key[], unsigned char * iv, unsigned int &outLen)
 {
   outLen = GetPaddingLength(inLen);
